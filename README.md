@@ -2,6 +2,19 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+clone project with command
+```bash
+git clone https://github.com/Obed47/tpGlFrontEnd.git
+```
+
+install dependencies with
+```bash
+npm install 
+```
+or 
+```bash
+yarn install
+```
 First, run the development server:
 
 ```bash
