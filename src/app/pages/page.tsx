@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { Car, MapPin, Calendar, Star, ArrowRight, Heart, Sparkles } from 'lucide-react';
-
+import Link from 'next/link';
 export default function CarRentalIntro() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentCar, setCurrentCar] = useState(0);
@@ -42,7 +42,7 @@ export default function CarRentalIntro() {
             <Car className="w-6 h-6 text-white" />
           </div>
           <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-            CuteRides
+            Propelize
           </span>
         </div>
         <div className="hidden md:flex space-x-8 text-gray-600">
@@ -50,9 +50,11 @@ export default function CarRentalIntro() {
           <a href="#" className="hover:text-purple-500 transition-colors">About</a>
           <a href="#" className="hover:text-purple-500 transition-colors">Contact</a>
         </div>
+        <Link href="/signUp">
         <button className="bg-gradient-to-r from-pink-400 to-purple-500 text-white px-6 py-2 rounded-full hover:shadow-lg transform hover:scale-105 transition-all">
           Sign In
         </button>
+        </Link>
       </nav>
 
       {/* Hero Section */}
