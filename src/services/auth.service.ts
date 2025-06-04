@@ -29,10 +29,9 @@ class AuthService {
   
       // Stocker les informations de l'utilisateur dans localStorage
     
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        console.log('User data stored in localStorage:', response.data.user);
+        localStorage.setItem('user', JSON.stringify(response.data));
+        console.log('User data stored in localStorage:', response.data);
       
-  
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
@@ -49,7 +48,6 @@ class AuthService {
    
         localStorage.setItem('user', JSON.stringify(response.data));
         console.log('User data stored in localStorage:', response.data);
-      
   
       return response.data;
     } catch (error) {
@@ -60,7 +58,7 @@ class AuthService {
 
   async logout(): Promise<AuthResponse> {
     try {
-  
+      
       const response = await api.post<AuthResponse>('users/logout');
       return response.data;
     } catch (error) {

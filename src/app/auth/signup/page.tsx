@@ -51,12 +51,7 @@ export default function SignUp() {
       });
 
       // Stocker les informations de l'utilisateur
-      localStorage.setItem('user', JSON.stringify({
-        name: formData.name,
-        role: formData.userType
-      }));
-
-      // Rediriger en fonction du rôle
+    
       if (formData.userType === 'admin') {
         router.push('/dashboard');
       } else {

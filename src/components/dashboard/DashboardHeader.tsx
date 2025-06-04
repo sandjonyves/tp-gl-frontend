@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Car, LogOut, ChevronDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { authService } from '@/services/auth.service';
 
 interface User {
   name: string;
@@ -11,16 +12,16 @@ export const DashboardHeader = () => {
   const router = useRouter();
   const [showUserMenu, setShowUserMenu] = useState(false);
   
-  const userStr = localStorage.getItem('user');
-  const user: User | null = userStr ? JSON.parse(userStr) : null;
+  // const userStr = localStorage.getItem('user');
+  // const user: User | null = userStr ? JSON.parse(userStr) : null;
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('accessToken');
+    authService.logout()
+    localStorage.removeItem('user')
     router.push('/auth/signin');
   };
 
-  if (!user) return null;
+  // if (!user) return null;
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-100">
@@ -44,17 +45,17 @@ export const DashboardHeader = () => {
                 className="flex items-center space-x-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full px-3 py-2 hover:from-pink-200 hover:to-purple-200 transition-all"
               >
                 <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium">
-                  {user.name.charAt(0).toUpperCase()}
+                  {/* {user.name.charAt(0).toUpperCase()} */}A
                 </div>
-                <span className="text-sm text-pink-600 font-medium">{user.name}</span>
+                {/* <span className="text-sm text-pink-600 font-medium">{user.name}</span> */}
                 <ChevronDown className={`w-4 h-4 text-pink-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
               </button>
 
               {showUserMenu && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-xs text-gray-500">{user.role}</p>
+                    {/* <p className="text-sm font-medium text-gray-900">{user.name}</p> */}
+                    {/* <p className="text-xs text-gray-500">{user.role}</p> */}
                   </div>
                   <div className="py-1">
                     <button

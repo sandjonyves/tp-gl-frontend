@@ -20,7 +20,7 @@ export default function SignIn() {
 
     try {
       const user = await authService.login({  name: name, password: password });
-      localStorage.setItem('user',JSON.stringify(user))
+      
       if (user) {
         router.push(user.role === 'admin' ? '/dashboard' : '/vehicles');
       } else {

@@ -5,6 +5,7 @@ import { Search, Filter, MapPin, Calendar, Users, Star, Heart, Settings, User, L
 import { useAuth } from '@/hooks/useAuth';
 import { vehicleService, Vehicle } from '@/services/vehicle.service';
 import Link from 'next/link';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 
 export default function UserDashboard() {
   const { user, logout, checkRoleAndRedirect } = useAuth();
@@ -22,9 +23,9 @@ export default function UserDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  useEffect(() => {
-    checkRoleAndRedirect();
-  }, []);
+  // useEffect(() => {
+  //   checkRoleAndRedirect();
+  // }, []);
 
   useEffect(() => {
     loadVehicles();
@@ -131,65 +132,8 @@ export default function UserDashboard() {
       <div className="absolute bottom-20 left-20 text-2xl animate-bounce opacity-10 delay-1000">💎</div>
 
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">🚗</span>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-                Propelize
-              </span>
-            </div>
-            
-            {/* <div className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-gray-600 hover:text-pink-500 transition-colors">My Bookings</a>
-              <a href="#" className="text-gray-600 hover:text-pink-500 transition-colors">Favorites</a>
-              <a href="#" className="text-gray-600 hover:text-pink-500 transition-colors">Support</a>
-            </div> */}
-
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-pink-500 transition-colors">
-                <Settings className="w-5 h-5" />
-              </button>
-              
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full px-3 py-2 hover:from-pink-200 hover:to-purple-200 transition-all"
-                >
-                  <User className="w-4 h-4 text-pink-600" />
-                  <span className="text-sm text-pink-600 font-medium">{user()?.name}</span>
-                  <ChevronDown className={`w-4 h-4 text-pink-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
-                </button>
-
-                {showUserMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{user()?.name}</p>
-                      <p className="text-xs text-gray-500">{user()?.email}</p>
-                    </div>
-                    <div className="py-1">
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          logout();
-                        }}
-                        className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Sign Out</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    
+      <DashboardHeader/>
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
