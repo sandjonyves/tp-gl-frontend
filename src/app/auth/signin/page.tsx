@@ -22,7 +22,7 @@ export default function SignIn() {
       const user = await authService.login({  name: name, password: password });
       localStorage.setItem('user',JSON.stringify(user))
       if (user) {
-        router.push(user?.role === 'admin' ? '/dashboard' : '/vehicles');
+        router.push(user.role === 'admin' ? '/dashboard' : '/vehicles');
       } else {
         setError('name ou mot de passe incorrect');
       }
