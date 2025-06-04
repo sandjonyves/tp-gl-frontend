@@ -13,10 +13,9 @@ export const ProjectDescription = () => {
         </h3>
       </div>
       <p className="text-gray-600 leading-relaxed">
-        Ce projet présente trois méthodes numériques — bissection, fausse position et Newton-Raphson — 
-        implémentées avec une interface claire et interactive. Notre objectif est de fournir un outil 
-        pédagogique permettant de visualiser et comprendre ces méthodes de résolution d'équations non linéaires.
-      </p>
+      Ce projet met en avant les principaux types de tests logiciels — tests unitaires, tests d'intégration et tests fonctionnels — à travers une application interactive. 
+       Il vise à illustrer l'importance des tests dans le cycle de développement et à offrir un support pédagogique clair pour comprendre et appliquer les bonnes pratiques de validation logicielle.
+   </p>
     </div>
   );
 }; 

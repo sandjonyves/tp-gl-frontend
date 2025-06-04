@@ -3,9 +3,13 @@ import { Users } from 'lucide-react';
 
 export const TeamSection = () => {
   const teamMembers = [
-    { name: 'Jean Dupont', role: 'Développeur frontend' },
-    { name: 'Fatou Ndiaye', role: 'Développeuse backend' },
-    { name: 'Marc Ngassa', role: 'Intégrateur' }
+    { name: 'Wouatchou Yves', role: 'Devops' },
+    { name: 'wingo abed', role: 'Développeur front' },
+    { name: 'mouope stefan', role: 'Développeur full' },
+    { name: 'dabou nestline', role: 'Testeuse' },
+    { name: 'Dokam Yvan', role: 'Développeur back' },
+    { name: 'Tindi Ornella', role: 'Développeuse full stack' },
+    { name: 'Cyndi joyce', role: 'devellopeuse front' }
   ];
 
   return (
