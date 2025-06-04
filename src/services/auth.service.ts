@@ -11,6 +11,9 @@ export interface RegisterData extends LoginCredentials {
 
 export interface AuthResponse {
   accessToken: string;
+  id: string;
+  name: string;
+  role: string;
   user: {
     id: string;
     name: string;
