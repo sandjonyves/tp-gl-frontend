@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
+import { authService } from '@/services/auth.service';
 
 interface User {
   email: string;
@@ -11,42 +12,53 @@ interface User {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    // Vérifier l'authentification au chargement
-    const token = Cookies.get('auth-token');
-    if (token) {
-      const userData = JSON.parse(localStorage.getItem('currentUser') || 'null');
-      if (userData) {
-        setUser(userData);
-      }
-    }
-    setLoading(false);
-  }, []);
 
-  const login = async (userData: User) => {
-    // Simuler une connexion réussie
-    const token = 'fake-jwt-token';
-    Cookies.set('auth-token', token, { expires: 7 }); // Expire dans 7 jours
-    localStorage.setItem('currentUser', JSON.stringify(userData));
-    setUser(userData);
+    
+  const user = () => {
+    const user = localStorage.getItem('user');
+    console.log(user)
+    return user ? JSON.parse(user) : null;
   };
-
+  
   const logout = () => {
-    Cookies.remove('auth-token');
-    localStorage.removeItem('currentUser');
-    setUser(null);
+    localStorage.removeItem('user');
+    localStorage.removeItem('accessToken');
+    authService.logout()
     router.push('/auth/signin');
   };
 
+  const checkRoleAndRedirect = () => {
+    const currentUser = user();
+    if (!currentUser) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    const currentPath = window.location.pathname;
+    if (currentUser.role === 'admin' && !currentPath.startsWith('/dashboard')) {
+      router.push('/dashboard');
+    } else if (currentUser.role === 'user' && !currentPath.startsWith('/vehicles')) {
+      router.push('/vehicles');
+    }
+  };
+
+  useEffect(() => {
+    checkRoleAndRedirect();
+  }, []);
+
+  // Exemple d'utilisation
+ 
+
+ 
+
   return {
     user,
-    loading,
-    login,
     logout,
-    isAuthenticated: !!user
+    loading,
+    checkRoleAndRedirect
   };
 } 

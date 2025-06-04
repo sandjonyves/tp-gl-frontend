@@ -16,9 +16,9 @@ export default function Dashboard() {
   const tabs = [
     { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
     { id: 'cars', name: 'Cars Management', icon: Car },
-    { id: 'bookings', name: 'Bookings', icon: BookOpen },
-    { id: 'users', name: 'Users', icon: Users },
-    { id: 'settings', name: 'Settings', icon: Settings }
+    // { id: 'bookings', name: 'Bookings', icon: BookOpen },
+    // { id: 'users', name: 'Users', icon: Users },
+    // { id: 'settings', name: 'Settings', icon: Settings }
   ];
 
   return (
@@ -39,9 +39,9 @@ export default function Dashboard() {
           <CarsManagement showAddModal={showAddModal} setShowAddModal={setShowAddModal} />
         )}
 
-        {['bookings', 'users', 'settings'].includes(activeTab) && (
+        {/* {['bookings', 'users', 'settings'].includes(activeTab) && (
           <UnderDevelopment section={activeTab} />
-        )}
+        )} */}
       </div>
     </div>
   );

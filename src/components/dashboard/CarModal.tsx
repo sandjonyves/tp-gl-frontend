@@ -66,7 +66,7 @@ export const CarModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-200 bg-opax flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-6 mt-12">
           <h2 className="text-xl font-bold text-gray-900">

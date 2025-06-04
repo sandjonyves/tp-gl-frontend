@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { authService } from '@/services/auth.service';
 import Link from 'next/link';
 
 export default function SignIn() {
   const router = useRouter();
-  const { login } = useAuth();
-  const [email, setEmail] = useState('');
+
+  const [name, setname] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,15 +19,12 @@ export default function SignIn() {
     setLoading(true);
 
     try {
-      // Simuler une vérification des identifiants
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find((u: any) => u.email === email && u.password === password);
-
+      const user = await authService.login({  name: name, password: password });
+      localStorage.setItem('user',JSON.stringify(user))
       if (user) {
-        await login({ email, name: user.name, role: user.role });
         router.push(user.role === 'admin' ? '/dashboard' : '/vehicles');
       } else {
-        setError('Email ou mot de passe incorrect');
+        setError('name ou mot de passe incorrect');
       }
     } catch (err) {
       setError('Une erreur est survenue');
@@ -55,17 +52,17 @@ export default function SignIn() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Name
               </label>
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setname(e.target.value)}
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-colors text-gray-900 placeholder-gray-400"
-                placeholder="votre@email.com"
+                placeholder="your name"
               />
             </div>
 

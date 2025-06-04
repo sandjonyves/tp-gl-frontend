@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Edit2, Trash2, Filter, Grid, List, Star, MapPin } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Filter, Grid, List, Star, MapPin, X, ArrowUpDown } from 'lucide-react';
 import { Button, Input, Table, Card, Badge } from '@/components/ui';
 import { CarModal } from './CarModal';
 import { vehicleService, Vehicle } from '@/services/vehicle.service';
@@ -9,6 +9,11 @@ interface CarsManagementProps {
   setShowAddModal: (show: boolean) => void;
 }
 
+interface PriceFilter {
+  min: number;
+  max: number;
+}
+
 export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagementProps) => {
   const [viewMode, setViewMode] = useState('grid');
   const [editingCar, setEditingCar] = useState<Vehicle | null>(null);
@@ -16,6 +21,9 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
   const [cars, setCars] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceFilter, setPriceFilter] = useState<PriceFilter>({ min: 0, max: 1000 });
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
 
   useEffect(() => {
     loadVehicles();
@@ -73,11 +81,43 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
     }
   };
 
-  const filteredCars = cars.filter(car => 
-    String(car.registrationNumber).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    car.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    car.model.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredCars = cars.filter(car => {
+    const matchesSearch = 
+      String(car.registrationNumber).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      car.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      car.model.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesPrice = 
+      car.rentalPrice >= priceFilter.min && 
+      car.rentalPrice <= priceFilter.max;
+
+    return matchesSearch && matchesPrice;
+  }).sort((a, b) => {
+    if (sortOrder === 'asc') {
+      return a.rentalPrice - b.rentalPrice;
+    } else if (sortOrder === 'desc') {
+      return b.rentalPrice - a.rentalPrice;
+    }
+    return 0;
+  });
+
+  const handlePriceFilterChange = (type: 'min' | 'max', value: string) => {
+    const numValue = value === '' ? 0 : Number(value);
+    setPriceFilter(prev => ({
+      ...prev,
+      [type]: numValue
+    }));
+  };
+
+  const clearFilters = () => {
+    setPriceFilter({ min: 0, max: 1000 });
+    setSearchTerm('');
+  };
+
+  const handleSort = (order: 'asc' | 'desc') => {
+    setSortOrder(order);
+    setShowFilters(false);
+  };
 
   const columns = [
     {
@@ -145,13 +185,51 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-64"
           />
-          <Button
-            variant="outline"
-            icon={Filter}
-            onClick={() => {}}
-          >
-            Filters
-          </Button>
+          <div className="relative">
+            <Button
+              variant="outline"
+              icon={ArrowUpDown}
+              onClick={() => setShowFilters(!showFilters)}
+              className={showFilters ? 'bg-pink-50 border-pink-200 text-pink-600' : ''}
+            >
+              Sort by Price
+            </Button>
+
+            {showFilters && (
+              <div className="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-100">
+                <button
+                  onClick={() => handleSort('asc')}
+                  className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors flex items-center space-x-2 ${
+                    sortOrder === 'asc' ? 'text-pink-600 bg-pink-50' : 'text-gray-700'
+                  }`}
+                >
+                  <ArrowUpDown className="w-4 h-4" />
+                  <span>Price: Low to High</span>
+                </button>
+                <button
+                  onClick={() => handleSort('desc')}
+                  className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-50 transition-colors flex items-center space-x-2 ${
+                    sortOrder === 'desc' ? 'text-pink-600 bg-pink-50' : 'text-gray-700'
+                  }`}
+                >
+                  <ArrowUpDown className="w-4 h-4" />
+                  <span>Price: High to Low</span>
+                </button>
+                {sortOrder && (
+                  <button
+                    onClick={() => {
+                      setSortOrder(null);
+                      setShowFilters(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center space-x-2 mt-1 border-t border-gray-100"
+                  >
+                    <X className="w-4 h-4" />
+                    <span>Clear Sort</span>
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         
         <div className="flex items-center space-x-4">
@@ -187,6 +265,11 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
       {/* Debug info */}
       <div className="text-sm text-gray-500">
         Total vehicles: {cars.length}, Filtered: {filteredCars.length}
+        {sortOrder && (
+          <span className="ml-2 text-pink-600">
+            (Sorted by price {sortOrder === 'asc' ? 'ascending' : 'descending'})
+          </span>
+        )}
       </div>
 
       {/* Vehicles grid/List */}
@@ -238,16 +321,7 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
         />
       )}
 
-      {/* Add/Edit Vehicle Modal */}
-      {showAddModal && (
-        <CarModal
-          editingCar={editingCar}
-          setEditingCar={setEditingCar}
-          setShowAddModal={setShowAddModal}
-          onAdd={handleAddCar}
-          onUpdate={handleUpdateCar}
-        />
-      )}
+     
     </div>
   );
 }; 

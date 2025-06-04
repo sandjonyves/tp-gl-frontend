@@ -16,7 +16,7 @@ class VehicleService {
   }
 
   async getVehicleByRegistrationNumber(registrationNumber: number): Promise<Vehicle> {
-    const response = await api.get<Vehicle>(`/vehicles/${registrationNumber}`);
+    const response = await api.get<Vehicle>(`vehicles/search/registration/${registrationNumber}`);
     return response.data;
   }
 

@@ -23,7 +23,7 @@ export const QuickActions = ({ setActiveTab, setShowAddModal }: QuickActionsProp
         </button>
         <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:scale-105">
           <Eye className="w-5 h-5" />
-          <span>View All Bookings</span>
+          <span></span>
         </button>
         <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-xl hover:from-green-600 hover:to-teal-700 transition-all transform hover:scale-105">
           <Users className="w-5 h-5" />
