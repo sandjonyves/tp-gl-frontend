@@ -44,23 +44,25 @@ export default function SignUp() {
       }
 
       // Inscription
-      const response = await authService.register({
+    const response = await authService.register({
         name: formData.name,
         password: formData.password,
         role: formData.userType,
       });
 
       // Stocker les informations de l'utilisateur
-    
-      if (formData.userType === 'admin') {
-        router.push('/dashboard');
-      } else {
-        router.push('/vehicles');
+      if(!!response){
+        if (formData.userType === 'admin') {
+          router.replace('/dashboard');
+        } else {
+          router.replace('/vehicles');
+        }
       }
+      
     } catch (err: any) {
       // Afficher un message d'erreur spécifique
       setError(err.message || 'Une erreur est survenue lors de l\'inscription');
-      console.error('Signup error:', err);
+      // console.error('Signup error:', err);
     } finally {
       setLoading(false);
     }

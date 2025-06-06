@@ -14,12 +14,12 @@ export const QuickActions = ({ setActiveTab, setShowAddModal }: QuickActionsProp
         <button
           onClick={() => {
             setActiveTab('cars');
-            setShowAddModal(true);
+            // setShowAddModal(true);
           }}
           className="flex items-center space-x-3 p-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl hover:from-pink-600 hover:to-purple-700 transition-all transform hover:scale-105"
         >
           <Plus className="w-5 h-5" />
-          <span>Add New Car</span>
+          <span>View Cars</span>
         </button>
         <button className="flex items-center space-x-3 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all transform hover:scale-105">
           <Eye className="w-5 h-5" />

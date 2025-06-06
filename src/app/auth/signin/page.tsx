@@ -18,19 +18,25 @@ export default function SignIn() {
     setError('');
     setLoading(true);
 
-    try {
-      const user = await authService.login({  name: name, password: password });
+  try{
+    
+    const response = await authService.login({  name: name, password: password });
+    // setLoading(false)
+    console.log(response)
+    router.push(response.role === 'admin' ? '/dashboard' : '/vehicles')
+    // if(!!response.id){
+    //   router.push(response.role === 'admin' ? '/dashboard' : '/vehicles')
+    // }
+    //  ;
+    
+  }catch(error){
+  
+      setError(error.message);
       
-      if (user) {
-        router.push(user.role === 'admin' ? '/dashboard' : '/vehicles');
-      } else {
-        setError('name ou mot de passe incorrect');
-      }
-    } catch (err) {
-      setError('Une erreur est survenue');
-    } finally {
-      setLoading(false);
-    }
+  }finally{
+    setLoading(false)
+  }
+   
   };
 
   return (

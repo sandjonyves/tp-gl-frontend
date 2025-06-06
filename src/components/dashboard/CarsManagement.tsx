@@ -15,7 +15,7 @@ interface PriceFilter {
 }
 
 export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagementProps) => {
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [editingCar, setEditingCar] = useState<Vehicle | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [cars, setCars] = useState<Vehicle[]>([]);
@@ -33,12 +33,11 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
     try {
       setLoading(true);
       const vehicles = await vehicleService.getAllVehicles();
-      console.log('Loaded vehicles:', vehicles); // Debug log
       setCars(vehicles);
       setError(null);
     } catch (err) {
       console.error('Error loading vehicles:', err);
-      setError('Failed to load vehicles');
+      setError('Failed to load vehicles. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -55,29 +54,32 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
       setCars(cars.filter(car => car.registrationNumber !== registrationNumber));
     } catch (err) {
       console.error('Error deleting vehicle:', err);
+      setError('Failed to delete vehicle. Please try again.');
     }
   };
 
   const handleAddCar = async (carData: Omit<Vehicle, 'registrationNumber'>) => {
     try {
       const newCar = await vehicleService.createVehicle(carData);
-      console.log('Added new car:', newCar); // Debug log
       setCars([...cars, newCar]);
       setShowAddModal(false);
     } catch (err) {
       console.error('Error adding vehicle:', err);
+      setError('Failed to add vehicle. Please try again.');
     }
   };
 
   const handleUpdateCar = async (registrationNumber: number, carData: Partial<Vehicle>) => {
     try {
       const updatedCar = await vehicleService.updateVehicle(registrationNumber, carData);
-      console.log('Updated car:', updatedCar); // Debug log
-      setCars(cars.map(car => car.registrationNumber === registrationNumber ? updatedCar : car));
+      setCars(cars.map(car => 
+        car.registrationNumber === registrationNumber ? updatedCar : car
+      ));
       setShowAddModal(false);
-      setEditingCar(null);
+      // setEditingCar(null);
     } catch (err) {
       console.error('Error updating vehicle:', err);
+      setError('Failed to update vehicle. Please try again.');
     }
   };
 
@@ -112,6 +114,7 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
   const clearFilters = () => {
     setPriceFilter({ min: 0, max: 1000 });
     setSearchTerm('');
+    setSortOrder(null);
   };
 
   const handleSort = (order: 'asc' | 'desc') => {
@@ -150,14 +153,20 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
             variant="ghost"
             size="sm"
             icon={Edit2}
-            onClick={() => handleEditCar(car)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditCar(car);
+            }}
             className="hover:text-blue-600 hover:bg-blue-50"
           />
           <Button
             variant="ghost"
             size="sm"
             icon={Trash2}
-            onClick={() => handleDeleteCar(car.registrationNumber)}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleDeleteCar(car.registrationNumber);
+            }}
             className="hover:text-red-600 hover:bg-red-50"
           />
         </div>
@@ -166,11 +175,18 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
   ];
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-64">Loading vehicles...</div>;
   }
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return (
+      <div className="p-4 bg-red-50 text-red-600 rounded-lg mb-4 flex justify-between items-center">
+        <span>{error}</span>
+        <Button variant="ghost" size="sm" onClick={() => setError(null)}>
+          <X className="w-4 h-4" />
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -263,65 +279,98 @@ export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagement
       </div>
 
       {/* Debug info */}
-      <div className="text-sm text-gray-500">
-        Total vehicles: {cars.length}, Filtered: {filteredCars.length}
-        {sortOrder && (
-          <span className="ml-2 text-pink-600">
-            (Sorted by price {sortOrder === 'asc' ? 'ascending' : 'descending'})
-          </span>
-        )}
-      </div>
-
-      {/* Vehicles grid/List */}
-      {viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCars.map(car => (
-            <Card key={`car-${car.registrationNumber}`} hover className="p-6">
-              <div className="text-center mb-4">
-                <div className="text-4xl mb-2">🚗</div>
-                <h3 className="text-xl font-bold text-gray-900">{car.make} {car.model}</h3>
-                <p className="text-gray-600">{car.registrationNumber}</p>
-              </div>
-              
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-pink-600">${car.rentalPrice}</span>
-                  <span className="text-gray-500">/day</span>
-                </div>
-                
-                <div className="flex items-center space-x-2 text-gray-600">
-                  <span>Year: {car.year}</span>
-                </div>
-                
-                <div className="flex justify-end space-x-2 pt-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Edit2}
-                    onClick={() => handleEditCar(car)}
-                    className="hover:text-blue-600 hover:bg-blue-50"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Trash2}
-                    onClick={() => handleDeleteCar(car.registrationNumber)}
-                    className="hover:text-red-600 hover:bg-red-50"
-                  />
-                </div>
-              </div>
-            </Card>
-          ))}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="text-sm text-gray-500">
+          Total vehicles: {cars.length}, Filtered: {cars.length}
+          {sortOrder && (
+            <span className="ml-2 text-pink-600">
+              (Sorted by price {sortOrder === 'asc' ? 'ascending' : 'descending'})
+            </span>
+          )}
         </div>
-      ) : (
-        <Table
-          columns={columns}
-          data={filteredCars}
-          onRowClick={(car) => handleEditCar(car)}
-        />
       )}
 
-     
+      {cars.length === 0 && (
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">🔍</div>
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">No cars found</h3>
+          <p className="text-gray-600 mb-4">Try adjusting your search criteria or filters</p>
+          <Button
+            onClick={clearFilters}
+            variant="gradient"
+            className="px-6 py-3"
+          >
+            Clear All Filters
+          </Button>
+        </div>
+      )}
+
+      {/* Vehicles grid/List */}
+      {cars.length > 0 && (
+        viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cars.map(car => (
+              <Card key={`car-${car.registrationNumber}`} hover className="p-6">
+                <div className="text-center mb-4">
+                  <div className="text-4xl mb-2">🚗</div>
+                  <h3 className="text-xl font-bold text-gray-900">{car.make} {car.model}</h3>
+                  <p className="text-gray-600">{car.registrationNumber}</p>
+                </div>
+                
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-bold text-pink-600">${car.rentalPrice}</span>
+                    <span className="text-gray-500">/day</span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2 text-gray-600">
+                    <span>Year: {car.year}</span>
+                  </div>
+                  
+                  <div className="flex justify-end space-x-2 pt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Edit2}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditCar(car);
+                      }}
+                      className="hover:text-blue-600 hover:bg-blue-50"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      icon={Trash2}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCar(car.registrationNumber);
+                      }}
+                      className="hover:text-red-600 hover:bg-red-50"
+                    />
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <Table
+            columns={columns}
+            data={cars}
+            onRowClick={(car) => handleEditCar(car)}
+          />
+        )
+      )}
+
+      {showAddModal && (
+        <CarModal
+          editingCar={editingCar}
+          setEditingCar={setEditingCar}
+          setShowAddModal={setShowAddModal}
+          onAdd={handleAddCar}
+          onUpdate={handleUpdateCar}
+        />
+      )}
     </div>
   );
-}; 
+};

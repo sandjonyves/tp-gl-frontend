@@ -21,24 +21,6 @@ export async function middleware(request: NextRequest) {
 
   // Si un token est présent, valider optionnellement avec le backend
   let isAuthenticated = !!accessToken;
-//   if (accessToken) {
-//     try {
-//       // Optionnel : Valider le token avec une requête au backend
-//       await api.post('/users/refresh', {
-//         headers: { Cookie: `accessToken=${accessToken}` },
-//       });
-//       console.log('Token validated successfully');
-//     } catch (error) {
-//       console.error('Token validation failed:', error);
-//       isAuthenticated = false;
-
-//       // Supprimer les cookies si le token est invalide
-//       const response = NextResponse.redirect(new URL('/auth/signin', request.url));
-//       response.cookies.delete('accessToken');
-//       response.cookies.delete('refreshToken');
-//       return response;
-//     }
-//   }
 
   // Si l'utilisateur est authentifié et accède à une route d'authentification
   if (isAuthenticated && authRoutes.some(route => pathname.startsWith(route))) {
@@ -46,7 +28,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // Autoriser la requête à continuer
+//   Autoriser la requête à continuer
   return NextResponse.next();
 }
 

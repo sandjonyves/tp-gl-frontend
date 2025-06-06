@@ -20,7 +20,6 @@ export default function Dashboard() {
     // { id: 'users', name: 'Users', icon: Users },
     // { id: 'settings', name: 'Settings', icon: Settings }
   ];
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">

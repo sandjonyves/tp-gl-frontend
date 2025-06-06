@@ -34,8 +34,9 @@ class AuthService {
       
       return response.data;
     } catch (error) {
+       
       console.error('Login error:', error);
-      throw error;
+      throw error
     }
   }
 

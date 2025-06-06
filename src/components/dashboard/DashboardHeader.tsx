@@ -15,10 +15,15 @@ export const DashboardHeader = () => {
   // const userStr = localStorage.getItem('user');
   // const user: User | null = userStr ? JSON.parse(userStr) : null;
 
-  const handleLogout = () => {
-    authService.logout()
-    localStorage.removeItem('user')
-    router.push('/auth/signin');
+  const handleLogout = async () => {
+    const response = await authService.logout()
+    if (response){
+      localStorage.removeItem('user')
+      router.push('/auth/signin');
+    }else{
+      alert('impossible de se deconnecter')
+    }
+   
   };
 
   // if (!user) return null;
