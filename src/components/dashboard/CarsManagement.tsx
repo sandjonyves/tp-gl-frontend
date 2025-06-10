@@ -6,7 +6,7 @@ import { vehicleService, Vehicle } from '@/services/vehicle.service';
 
 interface CarsManagementProps {
   showAddModal: boolean;
-  setShowAddModal: (show: boolean) => void;
+  setShowAddModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface PriceFilter {
