@@ -14,7 +14,10 @@ interface PriceFilter {
   max: number;
 }
 
-export const CarsManagement = ({ showAddModal, setShowAddModal }: CarsManagementProps) => {
+export const CarsManagement: React.FC<CarsManagementProps> = ({
+  showAddModal,
+  setShowAddModal,}) => {
+    
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [editingCar, setEditingCar] = useState<Vehicle | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
