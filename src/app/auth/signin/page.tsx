@@ -29,7 +29,7 @@ export default function SignIn() {
     // }
     //  ;
     
-  }catch(error){
+  }catch(error:any ){
   
       setError(error.message);
       
