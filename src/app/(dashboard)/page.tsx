@@ -65,8 +65,8 @@ export default function DashboardPage() {
       <CarsManagement 
         showAddModal={showAddModal}
         setShowAddModal={setShowAddModal}
-        onEditCar={handleEditCar}
-        onAddClick={handleAddClick}
+        // onEditCar={handleEditCar}
+        // onAddClick={handleAddClick}
       />
       {showAddModal && (
         <CarModal
