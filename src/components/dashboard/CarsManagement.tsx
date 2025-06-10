@@ -17,7 +17,7 @@ interface PriceFilter {
 export const CarsManagement: React.FC<CarsManagementProps> = ({
   showAddModal,
   setShowAddModal,}) => {
-    
+
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [editingCar, setEditingCar] = useState<Vehicle | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -300,7 +300,7 @@ export const CarsManagement: React.FC<CarsManagementProps> = ({
           <p className="text-gray-600 mb-4">Try adjusting your search criteria or filters</p>
           <Button
             onClick={clearFilters}
-            variant="gradient"
+            // variant="gradient"
             className="px-6 py-3"
           >
             Clear All Filters
